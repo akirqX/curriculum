@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Guilherme Moreira | Engenharia de TI, Design e Estratégia para Infraestruturas de Alta Performance.">
+    <title>Guilherme Moreira • Ordem & Performance Digital</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;500;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+
+        :root {
+            --bg-deep: #010208;
+            --bg-surface: rgba(13, 13, 25, 0.7);
+            --primary: #7039f0;
+            --primary-soft: #a78bfa;
+            --primary-glow: rgba(139, 92, 246, 0.4);
+            --accent: #2dd4bf;
+            --accent-glow: rgba(45, 212, 191, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --radius-card: 1.5rem;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- ATMOSPHERE --- */
+        .viewport-engine { position: fixed; inset: 0; z-index: -10; pointer-events: none; }
+        .video-bg { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.18; z-index: -9; filter: saturate(0) brightness(0.5); }
+        .gradient-orb { position: absolute; width: 80vw; height: 80vw; border-radius: 50%; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); top: -20%; left: -20%; filter: blur(100px); animation: drift 30s infinite alternate; }
+        .blueprint { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size: 55px 55px; mask-image: radial-gradient(circle at 50% 50%, black, transparent 85%); }
+        .noise { position: fixed; inset: 0; opacity: 0.03; z-index: -1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200'/%3E"); }
+        @keyframes drift { from { transform: translate(0,0); } to { transform: translate(10%, 10%); } }
+
+        /* --- TACTICAL CURSOR --- */
+        #c-dot { position: fixed; width: 6px; height: 6px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 10001; transform: translate(-50%, -50%); }
+        #c-outline { position: fixed; width: 40px; height: 40px; border: 1.5px solid var(--primary); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s, border-color 0.3s; }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1200px; padding: 0.8rem 2rem;
+            background: rgba(10, 10, 25, 0.6); backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border); border-radius: 100px; z-index: 1000; overflow: hidden;
+        }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .read-progress { position: absolute; bottom: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; transition: width 0.1s; }
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: -0.05em; background: linear-gradient(to right, #fff, var(--primary-soft)); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
+        .lang-switch { background: rgba(139,92,246,0.15); border: 1px solid var(--primary); padding: 0.6rem 1.4rem; border-radius: 50px; color: #fff; font-size: 0.75rem; font-weight: 700; transition: 0.3s; pointer-events: auto; }
+        .lang-switch:hover { background: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+
+        /* --- HERO & CONSOLE --- */
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
+        .hero { min-height: 100vh; display: flex; align-items: center; padding: 10rem 0 5rem; gap: 4rem; }
+        .hero-content { flex: 1.2; }
+        .hero-title { font-size: clamp(2.5rem, 6vw, 5.5rem); font-weight: 900; line-height: 0.95; margin-bottom: 2rem; letter-spacing: -0.05em; }
+        .gradient-text { background: linear-gradient(135deg, #fff, var(--primary-soft), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .hero-description { font-size: 1.15rem; color: var(--text-secondary); max-width: 580px; border-left: 3px solid var(--primary); padding-left: 1.5rem; margin-bottom: 3rem; }
+        
+        .terminal-wrap { flex: 0.9; perspective: 1200px; }
+        .terminal {
+            background: rgba(10, 10, 29, 0.425); backdrop-filter: blur(35px);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 28px; padding: 2rem;
+            transform: rotateY(-15deg) rotateX(5deg); box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 0 30px rgba(139,92,246,0.1);
+            position: relative; overflow: hidden;
+        }
+        .terminal::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%); background-size: 100% 4px; pointer-events: none; }
+
+        /* --- CARDS & GRID --- */
+        .section-header { margin: 8rem 0 4rem; border-left: 5px solid var(--primary); padding-left: 1.5rem; }
+        .section-header h2 { font-size: 2.2rem; font-weight: 800; }
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+        .bento-card {
+            background: rgba(15, 15, 30, 0.5); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); 
+            border-radius: var(--radius-card); padding: 2.5rem; position: relative; overflow: hidden; transition: 0.4s;
+        }
+        .bento-card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(800px circle at var(--x) var(--y), rgba(139, 92, 246, 0.15), transparent 40%); opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+        .bento-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .bento-card:hover::before { opacity: 1; }
+
+        .col-8 { grid-column: span 8; }
+        .col-4 { grid-column: span 4; }
+        .col-12 { grid-column: span 12; }
+
+        .exp-meta { font-family: 'JetBrains Mono'; color: var(--primary); font-size: 0.8rem; font-weight: 600; margin-bottom: 0.8rem; }
+        .exp-company { color: var(--accent); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .exp-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; }
+        
+        .list-tech { list-style: none; }
+        .list-tech li { display: flex; gap: 12px; margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem; }
+        .list-tech i { color: var(--primary); margin-top: 5px; font-size: 0.9rem; }
+        
+        .pill-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+        .pill { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139,92,246,0.2); padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; color: var(--primary-soft); transition: 0.3s; }
+        .pill:hover { background: var(--primary); color: #fff; transform: scale(1.1); }
+
+        /* --- CASE PREVIEW --- */
+        .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .btn-v { background: var(--primary); border-radius: 50px; padding: 0.8rem 1.8rem; color: #fff; text-decoration: none; font-weight: 800; font-size: 0.9rem; transition: 0.3s; pointer-events: auto; }
+        .btn-v:hover { transform: scale(1.05); filter: brightness(1.1); box-shadow: 0 10px 25px var(--primary-glow); }
+        .preview-win { width: 100%; height: 500px; border-radius: 25px; border: 1px solid var(--glass-border); overflow: hidden; background: #000; position: relative; pointer-events: auto !important; }
+        .preview-win iframe { width: 100%; height: 100%; border: none; opacity: 1; pointer-events: auto !important; }
+
+        /* --- CONTACT --- */
+        .c-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 6rem; }
+        .c-card { background: var(--bg-surface); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); padding: 2rem; border-radius: 28px; display: flex; align-items: center; gap: 1.5rem; text-decoration: none; color: #fff; transition: 0.4s; pointer-events: auto; }
+        .c-card i { font-size: 2.5rem; color: var(--primary); }
+        .c-card:hover { border-color: var(--primary); transform: translateY(-5px); background: rgba(139,92,246,0.1); }
+
+        /* --- FOOTER --- */
+        footer { padding: 8rem 0 4rem; text-align: center; border-top: 1px solid var(--glass-border); }
+        .f-status { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; }
+        .f-status span { color: var(--accent); }
+
+        @media (max-width: 1024px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 14rem; }
+            .terminal-wrap { width: 100%; }
+            .terminal { transform: none !important; }
+            .col-8, .col-4 { grid-column: span 12; }
+            #c-dot, #c-outline { display: none; }
+            * { cursor: auto !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="c-dot"></div>
+<div id="c-outline"></div>
+
+<div class="viewport-engine">
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="https://cdn.pixabay.com/video/2020/05/02/37894-415911987_large.mp4" type="video/mp4">
+    </video>
+    <div class="orb"></div>
+    <div class="blueprint"></div>
+    <div class="noise"></div>
+</div>
+
+<nav class="navbar">
+    <div class="read-progress" id="bar"></div>
+    <div class="nav-inner">
+        <div class="logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">G.MOREIRA</div>
+        <button class="lang-switch" id="langToggleBtn">🌐 English</button>
+    </div>
+</nav>
+
+<main class="container">
+    <section class="hero">
+        <div class="hero-content">
+            <div style="display:inline-flex; align-items:center; gap:10px; background:rgba(45,212,191,0.05); border:1px solid var(--accent-glow); padding:0.5rem 1rem; border-radius:50px; margin-bottom:2rem; font-family:'JetBrains Mono'; font-size:0.7rem; color:var(--accent);">
+                <div style="width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 10px var(--accent); animation:pulse 2s infinite;"></div>
+                <span data-i18n="status">HARDWARE • FIRMWARE • MINDSET</span>
+            </div>
+            <h1 class="hero-title">
+                <span data-i18n="heroLine1">Não vendemos código.</span><br>
+                <span class="gradient-text" data-i18n="heroLine2">Vendemos Ordem.</span>
+            </h1>
+            <p class="hero-description" data-i18n="heroDesc">Engenheiro de TI e Designer. Transformo <b>caos operacional</b> em <b>infraestruturas resilientes</b>. Especialista em impressão de grande formato, redes e soluções Full Stack com precisão industrial.</p>
+            <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+                <a href="#contato" class="btn-v" data-i18n="btnConnect" style="pointer-events: auto !important;"><i class="fas fa-plug"></i> Ativar Canal</a>
+                <a href="#cases" class="btn-v" style="background:rgba(255,255,255,0.03); border:1px solid var(--glass-border); pointer-events: auto !important;" data-i18n="btnProtocols"><i class="fas fa-code-branch"></i> Ver Cases</a>
+            </div>
+        </div>
+        <div class="terminal-wrap">
+            <div class="terminal" id="term">
+                <div style="display:flex; gap:10px; margin-bottom:1.5rem;">
+                    <div style="width:12px; height:12px; background:#ff5f56; border-radius:50%;"></div>
+                    <div style="width:12px; height:12px; background:#ffbd2e; border-radius:50%;"></div>
+                    <div style="width:12px; height:12px; background:#27c93f; border-radius:50%;"></div>
+                </div>
+                <div id="terminalWriter" style="font-family:'JetBrains Mono'; font-size:0.95rem; color:var(--primary-soft); line-height:1.8; min-height:160px; text-shadow:0 0 10px var(--primary-glow);"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="exp">
+        <div class="section-header">
+            <h2 data-i18n="sectionExp">▸ Trilha Operacional</h2>
+        </div>
+        <div class="bento-grid">
+            <div class="bento-card col-8 fade-up">
+                <div class="exp-meta" data-i18n="exp1Date">MAR 2022 — PRESENTE</div>
+                <div class="exp-company" data-i18n="exp1Company">Center Cópias | Núcleo Industrial</div>
+                <h3 class="exp-title" data-i18n="exp1Title">Gerente Técnico & Engenharia de TI</h3>
+                <ul class="list-tech">
+                    <li><i class="fas fa-microchip"></i> <span data-i18n="exp1l1">Arquitetura de rede e segurança de dados: 99.9% de uptime operacional.</span></li>
+                    <li><i class="fas fa-print"></i> <span data-i18n="exp1l2">Domínio absoluto da Roland TrueVIS SG3: manutenção preditiva e calibração espectral.</span></li>
+                    <li><i class="fas fa-palette"></i> <span data-i18n="exp1l3">Direção criativa e supervisão de projetos visuais de alto impacto.</span></li>
+                    <li><i class="fas fa-chalkboard-user"></i> <span data-i18n="exp1l4">Atendimento consultivo: transformamos necessidade em entrega técnica de elite.</span></li>
+                </ul>
+                <div class="pill-group">
+                    <span class="pill">Roland SG3</span><span class="pill">SysAdmin</span><span class="pill">Industrial Networks</span><span class="pill">Print</span>
+                </div>
+            </div>
+            <div class="bento-card col-4 fade-up">
+                <div class="exp-meta" data-i18n="exp2Date">AGO 2023 — PRESENTE</div>
+                <div class="exp-company">Freelancer | Operação Solo</div>
+                <h3 class="exp-title" data-i18n="exp2Title">Full Stack & Automação</h3>
+                <ul class="list-tech">
+                    <li><i class="fas fa-robot"></i> <span data-i18n="exp2l2">Automação de workflows com PHP/Laravel.</span></li>
+                    <li><i class="fas fa-chart-line"></i> <span data-i18n="exp2l3">SEO Técnico e UX estratégica.</span></li>
+                </ul>
+                <div class="pill-group"><span class="pill">Laravel</span><span class="pill">PHP 8</span><span class="pill">SEO</span></div>
+            </div>
+            <div class="bento-card col-12 fade-up">
+                <div class="exp-meta" data-i18n="exp3Date">2025 — ALVO PERMANENTE</div>
+                <div class="exp-company">Mindset de Guerra | Segurança Pública</div>
+                <h3 class="exp-title" data-i18n="exp3Title">Estratégia, Resiliência e Direito</h3>
+                <p style="color:var(--text-secondary); max-width:900px;" data-i18n="exp3Desc">Preparação tática para concursos de elite (PC/PF). Disciplina militar aplicada à tecnologia: não existe problema, existe solução em andamento. Domínio em Direito Penal, Constitucional e Processual Penal.</p>
+                <div class="pill-group"><span class="pill">Estratégia</span><span class="pill">Direito Penal</span><span class="pill">Resiliência</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cases">
+        <div class="section-header">
+            <h2 data-i18n="sectionCases">▸ Casos de Uso & Entregas</h2>
+        </div>
+        <div class="bento-card col-12 fade-up">
+            <div class="case-header">
+                <h3 style="font-size:2rem; font-weight:900;">Sistema de Gestão Interna | CCTX</h3>
+                <a href="https://akirqx.github.io/cctx/" target="_blank" class="btn-v">Visitar Projeto →</a>
+            </div>
+            <div class="preview-win">
+                <iframe src="https://akirqx.github.io/cctx/" title="CCTX Live"></iframe>
+            </div>
+            <p style="color:var(--text-secondary); margin-top:2rem; font-size:1.1rem;" data-i18n="caseDesc">Interface administrativa para controle de chamados e monitoramento de infraestrutura. Design técnico focado em usabilidade operacional.</p>
+        </div>
+    </section>
+
+    <section id="contato" style="margin-bottom:8rem;">
+        <div class="section-header">
+            <h2 data-i18n="sectionContact">▸ Conexões</h2>
+        </div>
+        <div class="c-grid">
+            <a href="https://wa.me/5573991480028" target="_blank" class="c-card">
+                <i class="fab fa-whatsapp"></i>
+                <div><h4 data-i18n="waRegional">Regional</h4><span>+55 73 99148-0028</span></div>
+            </a>
+            <a href="https://wa.me/5511914823015" target="_blank" class="c-card">
+                <i class="fab fa-whatsapp"></i>
+                <div><h4 data-i18n="waBusiness">Business</h4><span>+55 11 91482-3015</span></div>
+            </a>
+            <a href="mailto:akirqxm@gmail.com" class="c-card">
+                <i class="fas fa-envelope"></i>
+                <div><h4>E-mail</h4><span>akirqxm@gmail.com</span></div>
+            </a>
+            <a href="https://linkedin.com/in/guilherme-moreira-a0bbb430a" target="_blank" class="c-card">
+                <i class="fab fa-linkedin"></i>
+                <div><h4>LinkedIn</h4><span>Guilherme Moreira</span></div>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <div class="f-status">System Status: <span>Operational</span> • Security: <span>Optimal</span> • Protocol: <span>Industrial</span></div>
+        <p style="font-family:'JetBrains Mono'; font-size:0.75rem; opacity:0.4; letter-spacing:1px;">© 2026 GUILHERME MOREIRA • INFRAESTRUTURA MONITORADA • ALTA CONFIABILIDADE</p>
+    </div>
+</footer>
+
+<script>
+    // --- TACTICAL ENGINE ---
+    const dot = document.getElementById('c-dot'), outline = document.getElementById('c-outline');
+    window.addEventListener('mousemove', e => {
+        dot.style.left = outline.style.left = e.clientX + 'px';
+        dot.style.top = outline.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .pill').forEach(el => {
+        el.onmouseenter = () => { outline.style.width = '60px'; outline.style.height = '60px'; outline.style.background = 'rgba(139,92,246,0.15)'; };
+        el.onmouseleave = () => { outline.style.width = '40px'; outline.style.height = '40px'; outline.style.background = 'transparent'; };
+    });
+
+    const term = document.getElementById('term');
+    window.onmousemove = e => {
+        const x = (window.innerWidth / 2 - e.clientX) / 45, y = (window.innerHeight / 2 - e.clientY) / 45;
+        term.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+    };
+
+    document.querySelectorAll('.bento-card').forEach(c => {
+        c.onmousemove = e => { const r = c.getBoundingClientRect(); c.style.setProperty('--x', (e.clientX - r.left)+'px'); c.style.setProperty('--y', (e.clientY - r.top)+'px'); };
+    });
+
+    window.onscroll = () => { const h = document.documentElement; document.getElementById("bar").style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + "%"; };
+
+    // --- TRANSLATIONS (RESTORED 100%) ---
+    const translations = {
+        pt: {
+            status: "HARDWARE • FIRMWARE • MINDSET",
+            heroLine1: "Não vendemos código.", heroLine2: "Vendemos Ordem.",
+            heroDesc: "Engenheiro de TI e Designer. Transformo <b>caos operacional</b> em <b>infraestruturas resilientes</b>. Especialista em impressão de grande formato, redes e soluções Full Stack com precisão industrial.",
+            btnConnect: "Ativar Canal", btnProtocols: "Ver Cases",
+            sectionExp: "▸ Trilha Operacional", sectionContact: "▸ Conexões",
+            sectionCases: "▸ Casos de Uso & Entregas", caseDesc: "Interface administrativa para controle de chamados e monitoramento de infraestrutura.",
+            exp1Date: "MAR 2022 — PRESENTE", exp1Company: "Center Cópias | Núcleo Industrial", exp1Title: "Gerente Técnico & Engenharia de TI",
+            exp1l1: "Arquitetura de rede e segurança de dados: 99.9% de uptime operacional.", exp1l2: "Domínio absoluto da Roland TrueVIS SG3: manutenção preditiva.", exp1l3: "Direção criativa e supervisão de projetos visuais de alto impacto.", exp1l4: "Atendimento consultivo.",
+            exp2Date: "AGO 2023 — PRESENTE", exp2Title: "Full Stack & Automação", exp2l2: "Automação com PHP/Laravel.", exp2l3: "SEO Técnico e UX estratégica.",
+            exp3Date: "2025 — ALVO PERMANENTE", exp3Title: "Estratégia, Resiliência e Direito", exp3Desc: "Preparação tática para concursos de elite (PC/PF). Domínio em Direito Penal, Constitucional e Processual.",
+            waRegional: "Canal Regional", waBusiness: "Canal Business"
+        },
+        en: {
+            status: "HARDWARE • FIRMWARE • MINDSET",
+            heroLine1: "We don't sell code.", heroLine2: "We sell Order.",
+            heroDesc: "IT Engineer and Designer. I transform <b>operational chaos</b> into <b>resilient infrastructures</b>. Specialist in wide format printing, networks and Full Stack solutions.",
+            btnConnect: "Activate Channel", btnProtocols: "View Cases",
+            sectionExp: "▸ Operational Track", sectionContact: "▸ Tactical Connection",
+            sectionCases: "▸ Use Cases & Deliveries", caseDesc: "Administrative interface for ticket control and infrastructure monitoring.",
+            exp1Date: "MAR 2022 — PRESENT", exp1Company: "Center Cópias | Industrial Core", exp1Title: "Technical Manager & IT Engineering",
+            exp1l1: "Network architecture and data security: 99.9% uptime.", exp1l2: "Absolute Roland SG3 mastery.", exp1l3: "Creative project direction.", exp1l4: "Consultative service.",
+            exp2Date: "AUG 2023 — PRESENT", exp2Title: "Full Stack & Automation", exp2l2: "PHP/Laravel automation.", exp2l3: "Technical SEO and UX.",
+            exp3Date: "2025 — PERMANENT TARGET", exp3Title: "Strategy, Resilience & Law", exp3Desc: "Tactical preparation for elite public exams (PC/PF). Mastery in Criminal and Constitutional Law.",
+            waRegional: "Regional Channel", waBusiness: "Business Channel"
+        }
+    };
+
+    let currentLang = 'pt';
+    const terminalData = { pt: ["> Localizando host...", "> Roland TrueVIS: READY", "> Net_Admin: STABLE", "> Cloud_Kernel: ACTIVE", "> Status: ONLINE"], en: ["> Locating host...", "> Roland TrueVIS: READY", "> Net_Admin: STABLE", "> Cloud_Kernel: ACTIVE", "> Status: ONLINE"] };
+
+    function applyLang(lang) {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if(translations[lang][key]) {
+                if(['heroDesc','exp3Desc'].includes(key)) el.innerHTML = translations[lang][key];
+                else el.innerText = translations[lang][key];
+            }
+        });
+        document.getElementById('langToggleBtn').innerText = lang === 'pt' ? '🌐 English' : '🌐 Portuguese';
+        lineI = charI = 0; document.getElementById('terminalWriter').innerHTML = ""; type();
+    }
+
+    let lineI = 0, charI = 0;
+    function type() {
+        const lines = terminalData[currentLang]; const el = document.getElementById('terminalWriter');
+        if(lineI < lines.length) {
+            if(charI < lines[lineI].length) { el.innerHTML += lines[lineI][charI]; charI++; setTimeout(type, 30); }
+            else { el.innerHTML += "<br>"; lineI++; charI = 0; setTimeout(type, 400); }
+        }
+    }
+
+    document.getElementById('langToggleBtn').onclick = () => { currentLang = currentLang === 'pt' ? 'en' : 'pt'; applyLang(currentLang); };
+    const obs = new IntersectionObserver(ents => { ents.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+    window.onload = () => { applyLang('pt'); };
+</script>
+
+</body>
+</html>
